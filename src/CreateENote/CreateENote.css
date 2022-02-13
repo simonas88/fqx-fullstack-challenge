@@ -1,0 +1,7 @@
+.create-e-note-container {
+	align-items: center;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	gap: 1rem;
+}

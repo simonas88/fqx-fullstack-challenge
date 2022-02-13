@@ -1,11 +1,9 @@
 .App {
   align-items: center;
   display: flex;
-  background-color: #282c34;
   justify-content: center;
   height: 100vh;
   font-size: 1rem;
-  color: white;
 }
 
 .App-logo {
