@@ -1,21 +1,29 @@
 import { FC, useCallback } from "react";
-import CurrencyInput from "./components/CurrencyInput";
-import DatePicker from "./components/DatePicker";
-import ScalarInput from "./components/ScalarInput";
+import CurrencyInput from "../components/CurrencyInput";
+import DatePicker from "../components/DatePicker";
+import ScalarInput from "../components/ScalarInput";
+import SaveButton from "../components/SaveButton";
 import { useENoteReducer } from "./useENoteReducer";
-import "./CreateENote.css";
+import { ENoteCoreModel } from "../contracts";
+import "./ENoteForm.css";
 
 const toPercentPoints = (input?: number): number | undefined => input && input * 100;
 
-const CreateENote: FC = () => {
-	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet } = useENoteReducer();
+type ENoteFormProps = {
+	onSave: (model: ENoteCoreModel) => void;
+	title: string;
+}
+
+const ENoteForm: FC<ENoteFormProps> = ({ onSave, title }) => {
+	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet, eNoteCoreModel } = useENoteReducer();
 	const { changeAgioPercentage, changeAprPercentage } = actions;
 	const handleAgioPercentage = useCallback(input => changeAgioPercentage(input / 100), [changeAgioPercentage]);
 	const handleAprPercentage = useCallback(input => changeAprPercentage(input / 100), [changeAprPercentage]);
+	const handleSave = () => onSave(eNoteCoreModel as ENoteCoreModel);
 
 	return (
 		<div className="create-e-note-container">
-			<h2>Create eNote</h2>
+			<h2>{title}</h2>
 			<form className="create-e-note-form">
 				<CurrencyInput
 					currency="CHF"
@@ -68,9 +76,10 @@ const CreateENote: FC = () => {
 					limitPrecision={controlledFaceValueKey !== "faceValue"}
 					value={eNoteModel.faceValue}
 					onChange={actions.changeFaceValue} />
+				<SaveButton onClick={handleSave} disabled={!isCoreModelSet && !controlledFaceValueKey}>SAVE</SaveButton>
 			</form>
 		</div>
 	);
 };
 
-export default CreateENote;
+export default ENoteForm;

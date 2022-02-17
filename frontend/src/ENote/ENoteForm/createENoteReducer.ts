@@ -1,4 +1,4 @@
-import { ENoteCoreModel, ENoteDerivedModel, ENoteModel } from "./contracts";
+import { ENoteCoreModel, ENoteDerivedModel, ENoteModel } from "../contracts";
 import { getDerivedModel } from "./ENoteModelUtils";
 
 type ChangeAction<FieldKey extends keyof ENoteModel> = {

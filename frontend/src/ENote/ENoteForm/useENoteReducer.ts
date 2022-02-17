@@ -17,6 +17,7 @@ export const useENoteReducer = () => {
 	}), [dispatch]);
 
 	return {
+		eNoteCoreModel: reducerState.coreModel,
 		eNoteModel,
 		actions,
 		controlledFaceValueKey: reducerState.coreModel.faceValueKey,
