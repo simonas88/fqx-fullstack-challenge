@@ -1,3 +1,4 @@
+import { EnoteModel } from "contracts";
 import { ENoteCoreModel, ENoteDerivedModel } from "../contracts";
 import { getAprPercentage, getMaturity } from "../financeUtils";
 
@@ -96,3 +97,10 @@ export const getDerivedModel = (coreModel: Partial<ENoteCoreModel>): Partial<ENo
 		}
 	}
 };
+
+export const mapToEnoteModel = (input: ENoteCoreModel) => ({
+	purchasePrice: input.purchasePrice,
+	paymentDate: input.paymentDate,
+	dueDate: input.dueDate,
+	[input.faceValueKey]: input.faceValueValue
+}) as EnoteModel;
