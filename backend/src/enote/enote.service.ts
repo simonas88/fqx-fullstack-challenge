@@ -1,29 +1,29 @@
 import { Injectable } from "@nestjs/common";
-import { CreateEnoteDto } from "./dto/create-enote.dto";
+import { EnoteModel, EnoteSavedModel } from "contracts";
 import { EnoteRepository } from "./enote.repository";
-import { Enote } from "./entities/enote.entity";
+import { EnoteEntity } from "./entities/enote.entity";
 
 @Injectable()
 export class EnoteService {
 	constructor(private readonly repository: EnoteRepository) {}
 
-	create(createEnoteDto: CreateEnoteDto) {
+	create(createEnoteDto: EnoteModel): Promise<EnoteSavedModel> {
 		return this.repository.create(createEnoteDto);
 	}
 
-	findAll() {
+	findAll(): Promise<Array<EnoteSavedModel>> {
 		return this.repository.findAll();
 	}
 
-	findOne(id: number) {
+	findOne(id: number): Promise<EnoteSavedModel> {
 		return this.repository.findOne(id);
 	}
 
-	update(id: number, updateEnoteDto: Enote) {
-		return this.repository.update(id, updateEnoteDto);
+	update(id: number, updateEnoteDto: EnoteModel): Promise<EnoteSavedModel> {
+		return this.repository.update(id, updateEnoteDto as EnoteEntity);
 	}
 
-	remove(id: number) {
+	remove(id: number): Promise<EnoteSavedModel> {
 		return this.repository.remove(id);
 	}
 }

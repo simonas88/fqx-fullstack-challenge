@@ -1,10 +1,3 @@
-export type Enote = {
-	id: number;
-	purchasePrice: number;
-	paymentDate: Date;
-	dueDate: Date;
-	faceValue?: number;
-	agioPercentage?: number;
-	agioValue?: number;
-	aprPercentage?: number;
-}
+import { EnoteModel } from "contracts";
+
+export type EnoteEntity = EnoteModel & { id: number }

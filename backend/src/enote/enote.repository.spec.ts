@@ -1,6 +1,6 @@
 import { readFile, unlink } from "fs/promises";
+import { EnoteModel } from "contracts";
 import { EnoteRepository } from "./enote.repository";
-import { Enote } from "./entities/enote.entity";
 
 const REPO_LOCATION = "./database.test.json";
 
@@ -9,7 +9,7 @@ const readFilePromise = async () => {
 	return JSON.parse(content);
 };
 
-const TEST_ENOTE: Omit<Enote, "id"> = {
+const TEST_ENOTE: EnoteModel = {
 	purchasePrice: 100,
 	paymentDate: new Date("2020-01-01").toISOString() as unknown as Date,
 	dueDate: new Date("2020-02-01").toISOString() as unknown as Date,
