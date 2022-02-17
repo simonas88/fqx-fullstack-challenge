@@ -7,22 +7,36 @@ type CurrencyInputProps = {
 	currency?: string;
 	value?: number;
 	onChange: (value: number) => void;
+	limitPrecision?: boolean;
+	disabled?: boolean;
+	helperText?: string;
 }
 
-const CurrencyInput: FC<CurrencyInputProps> = ({ value, onChange, label, currency }) => {
+const CurrencyInput: FC<CurrencyInputProps> = ({
+	value,
+	onChange,
+	label,
+	currency,
+	limitPrecision = false,
+	disabled,
+	helperText
+}) => {
 	const handleChange = useCallback<ChangeEventHandler<HTMLInputElement>>(e => onChange(Number(e.target.value)), [onChange]);
 	const inputProps = useMemo(() => ({
 		startAdornment: <InputAdornment position="start">{currency}</InputAdornment>
 	}), [currency]);
+	const displayValue = limitPrecision ? value?.toFixed(2) : value;
 
 	return (
 		<TextField
 			label={label}
-			value={value === undefined ? "" : value}
+			value={displayValue === undefined ? "" : displayValue}
+			disabled={disabled}
 			variant="outlined"
 			type="number"
 			onChange={handleChange}
 			InputProps={currency ? inputProps : undefined}
+			helperText={helperText}
 		/>
 	);
 };

@@ -1,5 +1,6 @@
 import { useMemo, useReducer } from "react";
 import reducer, { defaultState, getENoteModel } from "./createENoteReducer";
+import { isValueSet } from "./ENoteModelUtils";
 
 export const useENoteReducer = () => {
 	const [reducerState, dispatch] = useReducer(reducer, defaultState);
@@ -18,6 +19,10 @@ export const useENoteReducer = () => {
 	return {
 		eNoteModel,
 		actions,
-		reducerState
+		controlledFaceValueKey: reducerState.coreModel.faceValueKey,
+		isCoreModelSet: true
+			&& isValueSet(reducerState.coreModel.purchasePrice)
+			&& isValueSet(reducerState.coreModel.paymentDate)
+			&& isValueSet(reducerState.coreModel.dueDate)
 	};
 };

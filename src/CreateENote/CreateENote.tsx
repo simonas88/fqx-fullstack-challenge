@@ -1,12 +1,17 @@
-import { FC } from "react";
+import { FC, useCallback } from "react";
 import CurrencyInput from "./components/CurrencyInput";
 import DatePicker from "./components/DatePicker";
 import ScalarInput from "./components/ScalarInput";
 import { useENoteReducer } from "./useENoteReducer";
 import "./CreateENote.css";
 
+const toPercentPoints = (input?: number): number | undefined => input && input * 100;
+
 const CreateENote: FC = () => {
-	const { eNoteModel, actions } = useENoteReducer();
+	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet } = useENoteReducer();
+	const { changeAgioPercentage, changeAprPercentage } = actions;
+	const handleAgioPercentage = useCallback(input => changeAgioPercentage(input / 100), [changeAgioPercentage]);
+	const handleAprPercentage = useCallback(input => changeAprPercentage(input / 100), [changeAprPercentage]);
 
 	return (
 		<div className="create-e-note-container">
@@ -34,21 +39,33 @@ const CreateENote: FC = () => {
 				<CurrencyInput
 					currency="%"
 					label="Agio"
-					value={eNoteModel.agioPercentage && eNoteModel.agioPercentage * 100}
-					onChange={value => actions.changeAgioPercentage(value / 100)} />
+					disabled={!isCoreModelSet}
+					helperText={isCoreModelSet ? undefined : "Please fill out purchase price, payment date, and due date first"}
+					limitPrecision={controlledFaceValueKey !== "agioPercentage"}
+					value={toPercentPoints(eNoteModel.agioPercentage)}
+					onChange={handleAgioPercentage} />
 				<CurrencyInput
 					currency="CHF"
 					label="Agio"
+					disabled={!isCoreModelSet}
+					helperText={isCoreModelSet ? undefined : "Please fill out purchase price, payment date, and due date first"}
+					limitPrecision={controlledFaceValueKey !== "agioValue"}
 					value={eNoteModel.agioValue}
 					onChange={actions.changeAgioValue} />
 				<CurrencyInput
 					currency="%"
 					label="APR"
-					value={eNoteModel.aprPercentage}
-					onChange={actions.changeAprPercentage} />
+					disabled={!isCoreModelSet}
+					helperText={isCoreModelSet ? undefined : "Please fill out purchase price, payment date, and due date first"}
+					limitPrecision={controlledFaceValueKey !== "aprPercentage"}
+					value={toPercentPoints(eNoteModel.aprPercentage)}
+					onChange={handleAprPercentage} />
 				<CurrencyInput
 					currency="CHF"
 					label="Face value"
+					disabled={!isCoreModelSet}
+					helperText={isCoreModelSet ? undefined : "Please fill out purchase price, payment date, and due date first"}
+					limitPrecision={controlledFaceValueKey !== "faceValue"}
 					value={eNoteModel.faceValue}
 					onChange={actions.changeFaceValue} />
 			</form>

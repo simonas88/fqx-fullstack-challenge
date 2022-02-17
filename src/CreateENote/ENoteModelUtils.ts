@@ -1,7 +1,7 @@
 import { ENoteCoreModel, ENoteDerivedModel } from "./contracts";
 import { getAprPercentage, getMaturity } from "./financeUtils";
 
-const isValueSet = <T extends number | Date | string>(value?: number | Date | string): value is T => value !== undefined && value !== null;
+export const isValueSet = <T extends number | Date | string>(value?: number | Date | string): value is T => value !== undefined && value !== null;
 const isCoreFullySet = (input: Partial<ENoteCoreModel>): input is ENoteCoreModel => true
 	&& isValueSet(input.purchasePrice)
 	&& isValueSet(input.paymentDate)
