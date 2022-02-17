@@ -15,7 +15,7 @@ export class EnoteService {
 		return this.repository.findAll();
 	}
 
-	findOne(id: number): Promise<EnoteSavedModel> {
+	findOne(id: number): Promise<EnoteSavedModel | undefined> {
 		return this.repository.findOne(id);
 	}
 

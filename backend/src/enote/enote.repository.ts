@@ -5,16 +5,8 @@ import { EnoteEntity } from "./entities/enote.entity";
 
 const REPO_LOCATION =  process.env.NODE_ENV === "test" ? "./database.test.json" : "../database.json";
 
-interface IEnoteRepository {
-	create: (enote: EnoteModel) => Promise<EnoteEntity>;
-  findAll: () => Promise<EnoteEntity[]>;
-  findOne: (id: EnoteEntity["id"]) => Promise<EnoteEntity>;
-  update: (id: EnoteEntity["id"], payload: EnoteSavedModel) => Promise<EnoteEntity>
-  remove: (id: EnoteEntity["id"]) => Promise<EnoteEntity>;
-}
-
 @Injectable()
-export class EnoteRepository implements IEnoteRepository {
+export class EnoteRepository {
 	private async getAllEnotes (): Promise<EnoteEntity[]> {
 		try {
 			const fileContents = await readFile(REPO_LOCATION, { encoding: "utf-8" });
@@ -46,7 +38,7 @@ export class EnoteRepository implements IEnoteRepository {
 		return this.getAllEnotes();
 	}
 
-	public async findOne (id: number) {
+	public async findOne (id: number): Promise<EnoteEntity | undefined> {
 		const allEnotes = await this.getAllEnotes();
 		return allEnotes.find(enote => enote.id === id);
 	}

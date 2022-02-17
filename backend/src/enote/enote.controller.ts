@@ -1,5 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from "@nestjs/common";
+import { Controller, Get, Post, Body, Patch, Param, Delete, HttpException, HttpStatus } from "@nestjs/common";
 import { EnoteModel, EnoteSavedModel } from "contracts";
+import { EnoteModelPipe } from "./enote.model.pipe";
 import { EnoteService } from "./enote.service";
 
 @Controller("enote")
@@ -7,7 +8,7 @@ export class EnoteController {
 	constructor(private readonly enoteService: EnoteService) {}
 
   @Post()
-	create(@Body() createEnoteDto: EnoteModel): Promise<EnoteSavedModel> {
+	create(@Body(EnoteModelPipe) createEnoteDto: EnoteModel): Promise<EnoteSavedModel> {
 		return this.enoteService.create(createEnoteDto);
 	}
 
@@ -18,11 +19,15 @@ export class EnoteController {
 
   @Get(":id")
   findOne(@Param("id") id: string): Promise<EnoteSavedModel> {
-  	return this.enoteService.findOne(Number(id));
+  	const one = this.enoteService.findOne(Number(id));
+  	if (!one) {
+  		throw new HttpException(`no model id=${id}`, HttpStatus.NOT_FOUND);
+  	}
+  	return one;
   }
 
   @Patch(":id")
-  update(@Param("id") id: string, @Body() updateEnoteDto: EnoteModel): Promise<EnoteSavedModel> {
+  update(@Param("id") id: string, @Body(EnoteModelPipe) updateEnoteDto: EnoteModel): Promise<EnoteSavedModel> {
   	return this.enoteService.update(Number(id), updateEnoteDto);
   }
 
