@@ -5,7 +5,7 @@ import InputAdornment from "@mui/material/InputAdornment/InputAdornment";
 type CurrencyInputProps = {
 	label?: string;
 	currency?: string;
-	value: number;
+	value?: number;
 	onChange: (value: number) => void;
 }
 
@@ -18,7 +18,7 @@ const CurrencyInput: FC<CurrencyInputProps> = ({ value, onChange, label, currenc
 	return (
 		<TextField
 			label={label}
-			value={value}
+			value={value === undefined ? "" : value}
 			variant="outlined"
 			type="number"
 			onChange={handleChange}

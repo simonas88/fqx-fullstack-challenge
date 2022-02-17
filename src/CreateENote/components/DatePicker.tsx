@@ -1,5 +1,5 @@
 import { FC, useCallback } from "react";
-import chLocale from "date-fns/locale/fr-CH";
+import enLocale from "date-fns/locale/en-GB";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePickerMui from "@mui/lab/DatePicker";
@@ -7,8 +7,10 @@ import TextField from "@mui/material/TextField/TextField";
 
 type DatePickerProps = {
 	label: string;
-	value: Date;
+	value?: Date;
 	onChange: (date: Date) => void;
+	minDate?: Date;
+	maxDate?: Date;
 }
 
 const DatePicker: FC<DatePickerProps> = (props) => {
@@ -16,9 +18,10 @@ const DatePicker: FC<DatePickerProps> = (props) => {
 	const handleChange = useCallback((e: Date | null) => onChange(e || new Date()), [onChange]);
 
 	return (
-		<LocalizationProvider dateAdapter={AdapterDateFns} locale={chLocale}>
+		<LocalizationProvider dateAdapter={AdapterDateFns} locale={enLocale}>
 			<DatePickerMui
 				{...props}
+				value={props.value ?? null}
 				onChange={handleChange}
 				renderInput={(props) => <TextField {...props} />} />
 		</LocalizationProvider>
