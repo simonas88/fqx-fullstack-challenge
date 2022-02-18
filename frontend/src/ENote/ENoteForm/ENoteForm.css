@@ -7,6 +7,12 @@
 	width: 20rem;
 }
 
+@media screen and (max-width: 24rem) {
+	.create-e-note-form {
+		width: 100%;
+	}
+}
+
 .create-e-note-title-box {
 	align-items: center;
 	display: flex;
