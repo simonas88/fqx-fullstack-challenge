@@ -12,10 +12,11 @@ const toPercentPoints = (input?: number): number | undefined => input && input *
 type ENoteFormProps = {
 	onSave: (model: ENoteCoreModel) => void;
 	title: string;
+	initModel?: ENoteCoreModel;
 }
 
-const ENoteForm: FC<ENoteFormProps> = ({ onSave, title }) => {
-	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet, eNoteCoreModel } = useENoteReducer();
+const ENoteForm: FC<ENoteFormProps> = ({ onSave, title, initModel }) => {
+	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet, eNoteCoreModel } = useENoteReducer(initModel);
 	const { changeAgioPercentage, changeAprPercentage } = actions;
 	const handleAgioPercentage = useCallback(input => changeAgioPercentage(input / 100), [changeAgioPercentage]);
 	const handleAprPercentage = useCallback(input => changeAprPercentage(input / 100), [changeAprPercentage]);

@@ -1,5 +1,5 @@
 import { EnoteModel } from "contracts";
-import { ENoteCoreModel, ENoteDerivedModel } from "../contracts";
+import { ENoteCoreModel, ENoteDerivedModel, FaceValueKey } from "../contracts";
 import { getAprPercentage, getMaturity } from "../financeUtils";
 
 export const isValueSet = <T extends number | Date | string>(value?: number | Date | string): value is T => value !== undefined && value !== null;
@@ -98,9 +98,24 @@ export const getDerivedModel = (coreModel: Partial<ENoteCoreModel>): Partial<ENo
 	}
 };
 
-export const mapToEnoteModel = (input: ENoteCoreModel) => ({
+export const mapToEnoteModel = (input: ENoteCoreModel, id?: number) => ({
+	id,
 	purchasePrice: input.purchasePrice,
 	paymentDate: input.paymentDate,
 	dueDate: input.dueDate,
 	[input.faceValueKey]: input.faceValueValue
-}) as EnoteModel;
+}) as unknown as EnoteModel;
+
+const FACE_VALUE_KEYS = ["faceValue", "agioValue", "agioPercentage", "aprPercentage"];
+export const mapToENoteCoreModel = (input: EnoteModel): ENoteCoreModel => {
+	const faceValueKey = FACE_VALUE_KEYS.find(key => isValueSet(input[key as keyof EnoteModel])) as FaceValueKey;
+	const faceValueValue = input[faceValueKey as keyof EnoteModel] as number;
+
+	return {
+		purchasePrice: input.purchasePrice,
+		paymentDate: new Date(input.paymentDate),
+		dueDate: new Date(input.dueDate),
+		faceValueKey,
+		faceValueValue,
+	};
+};

@@ -66,7 +66,6 @@ const reducer = (
 		case "agioPercentage":
 		case "agioValue":
 		case "aprPercentage": {
-			console.log({ action, state });
 			const nextCoreState = {
 				...state.coreModel,
 				faceValueKey: action.key,
