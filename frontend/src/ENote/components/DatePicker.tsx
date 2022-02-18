@@ -3,7 +3,7 @@ import enLocale from "date-fns/locale/en-GB";
 import AdapterDateFns from "@mui/lab/AdapterDateFns";
 import LocalizationProvider from "@mui/lab/LocalizationProvider";
 import DatePickerMui from "@mui/lab/DatePicker";
-import TextField from "@mui/material/TextField/TextField";
+import { TextField } from "@mui/material";
 
 type DatePickerProps = {
 	label: string;

@@ -1,6 +1,6 @@
 import { ChangeEventHandler, FC, useCallback, useMemo } from "react";
-import TextField from "@mui/material/TextField/TextField";
-import InputAdornment from "@mui/material/InputAdornment/InputAdornment";
+import { TextField } from "@mui/material";
+import { InputAdornment } from "@mui/material";
 
 type CurrencyInputProps = {
 	label?: string;

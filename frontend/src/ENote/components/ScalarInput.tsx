@@ -1,5 +1,5 @@
 import { ChangeEventHandler, FC, useCallback } from "react";
-import TextField from "@mui/material/TextField/TextField";
+import { TextField } from "@mui/material";
 
 type ScalarInputProps = {
 	label?: string;
