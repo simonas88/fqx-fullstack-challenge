@@ -18,13 +18,15 @@ export type AnyChangeAction =
 	| ChangeAction<"aprPercentage">
 	| ChangeAction<"faceValue">
 
-type ResetAction = {
-	type: "reset";
-}
-
 export type ENoteModelReducerState = {
 	coreModel: Partial<EnoteCoreModel>;
 	derivedModel: Partial<EnoteDerivedModel>;
+	pristine: boolean;
+}
+
+type ResetAction = {
+	type: "reset";
+	payload?: ENoteModelReducerState
 }
 
 export const getENoteModel = (state: ENoteModelReducerState): Partial<EnoteFormModel> => ({
@@ -36,7 +38,8 @@ export const getENoteModel = (state: ENoteModelReducerState): Partial<EnoteFormM
 
 export const defaultState: ENoteModelReducerState = Object.freeze({
 	coreModel: Object.freeze({}),
-	derivedModel: Object.freeze({})
+	derivedModel: Object.freeze({}),
+	pristine: true,
 });
 
 const reducer = (
@@ -44,7 +47,7 @@ const reducer = (
 	action: AnyChangeAction | ResetAction
 ): ENoteModelReducerState => {
 	if (action.type === "reset") {
-		return { ...defaultState };
+		return { ...(action.payload || defaultState) };
 	}
 
 	switch(action.key) {
@@ -58,7 +61,8 @@ const reducer = (
 
 			return {
 				coreModel: nextCoreState,
-				derivedModel: getDerivedModel(nextCoreState)
+				derivedModel: getDerivedModel(nextCoreState),
+				pristine: false,
 			};
 		}
 
@@ -74,7 +78,8 @@ const reducer = (
 
 			return {
 				coreModel: nextCoreState,
-				derivedModel: getDerivedModel(nextCoreState)
+				derivedModel: getDerivedModel(nextCoreState),
+				pristine: false
 			};
 		}
 

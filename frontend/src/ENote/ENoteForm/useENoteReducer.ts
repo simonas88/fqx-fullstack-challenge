@@ -7,12 +7,13 @@ const getInitState = (initModel?: EnoteCoreModel): ENoteModelReducerState => {
 	if (!initModel) return defaultState;
 	return {
 		coreModel: initModel,
-		derivedModel: getDerivedModel(initModel)
+		derivedModel: getDerivedModel(initModel),
+		pristine: true,
 	};
 };
 
 export const useENoteReducer = (initModel?: EnoteCoreModel) => {
-	const [reducerState, dispatch] = useReducer(reducer, getInitState(initModel));
+	const [reducerState, dispatch] = useReducer(reducer, initModel, getInitState);
 	const eNoteModel = useMemo(() => getENoteModel(reducerState), [reducerState]);
 
 	const actions = useMemo(() => ({
@@ -23,6 +24,7 @@ export const useENoteReducer = (initModel?: EnoteCoreModel) => {
 		changeAgioPercentage: (value: number) => dispatch({ type: "change", key: "agioPercentage", value }),
 		changeAgioValue: (value: number) => dispatch({ type: "change", key: "agioValue", value }),
 		changeAprPercentage: (value: number) => dispatch({ type: "change", key: "aprPercentage", value }),
+		reset: (payload: EnoteCoreModel) => dispatch({ type: "reset", payload: getInitState(payload) })
 	}), [dispatch]);
 
 	return {
@@ -30,6 +32,7 @@ export const useENoteReducer = (initModel?: EnoteCoreModel) => {
 		eNoteModel,
 		actions,
 		controlledFaceValueKey: reducerState.coreModel.faceValueKey,
+		pristine: reducerState.pristine,
 		isCoreModelSet: true
 			&& isValueSet(reducerState.coreModel.purchasePrice)
 			&& isValueSet(reducerState.coreModel.paymentDate)

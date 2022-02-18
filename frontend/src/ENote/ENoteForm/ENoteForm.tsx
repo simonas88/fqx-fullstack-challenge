@@ -1,8 +1,10 @@
 import { ReactElement, useCallback, useEffect } from "react";
+import isEmpty from "lodash/isEmpty";
 import CurrencyInput from "../components/CurrencyInput";
 import DatePicker from "../components/DatePicker";
 import ScalarInput from "../components/ScalarInput";
 import SaveButton from "../components/SaveButton";
+import LoadingIndicator from "../components/LoadingIndicator";
 import { useENoteReducer } from "./useENoteReducer";
 import { EnoteCoreModel, EnoteCoreModelSaved } from "../../contracts";
 import "./ENoteForm.css";
@@ -11,7 +13,8 @@ const toPercentPoints = (input?: number): number | undefined => input && input *
 
 type ENoteFormProps<T extends EnoteCoreModel | EnoteCoreModelSaved> = {
 	onSubmit?: (model: T) => void;
-	onChange: (model: T) => void;
+	onChange?: (model: T) => void;
+	isWorking?: boolean;
 	title: string;
 	initModel?: EnoteCoreModel;
 }
@@ -20,21 +23,33 @@ const ENoteForm = <T extends EnoteCoreModel | EnoteCoreModelSaved>({
 	onSubmit,
 	onChange,
 	title,
-	initModel
+	initModel,
+	isWorking
 }: ENoteFormProps<T>): ReactElement => {
-	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet, eNoteCoreModel } = useENoteReducer(initModel);
-	const { changeAgioPercentage, changeAprPercentage } = actions;
+	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet, eNoteCoreModel, pristine } = useENoteReducer();
+	const { changeAgioPercentage, changeAprPercentage, reset } = actions;
 	const handleAgioPercentage = useCallback(input => changeAgioPercentage(input / 100), [changeAgioPercentage]);
 	const handleAprPercentage = useCallback(input => changeAprPercentage(input / 100), [changeAprPercentage]);
 	const handleSave = () => onSubmit?.(eNoteCoreModel as T);
 
 	useEffect(() => {
-		onChange(eNoteCoreModel as T);
-	}, [eNoteCoreModel, onChange]);
+		if (initModel && !isEmpty(initModel)) {
+			reset(initModel);
+		}
+	}, [initModel, reset]);
+
+	useEffect(() => {
+		if (pristine) return;
+
+		onChange?.(eNoteCoreModel as T);
+	}, [eNoteCoreModel, onChange, pristine]);
 
 	return (
 		<div className="create-e-note-container">
-			<h2>{title}</h2>
+			<div className="create-e-note-title-box">
+				<h2>{title}</h2>
+				{isWorking && (<LoadingIndicator />)}
+			</div>
 			<form className="create-e-note-form">
 				<CurrencyInput
 					currency="CHF"

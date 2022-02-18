@@ -9,9 +9,9 @@ import { EnoteCoreModelSaved } from "../../../contracts";
 const EditENote: FC = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
-	const { mutateAsync } = useMutation("update", putEnote);
+	const { mutateAsync, isLoading } = useMutation("update", putEnote);
 	// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-	const { data, status } = useQuery("fetch", () => getEnote(id!), { retry: false });
+	const { data, status, isFetching } = useQuery("fetch", () => getEnote(id!), { retry: false });
 
 	const debouncedSave = useMemo(() => debounce((model: EnoteCoreModelSaved) => {
 		mutateAsync({
@@ -26,13 +26,10 @@ const EditENote: FC = () => {
 		}
 	}, [status, navigate]);
 
-	if (status !== "success" && !data) {
-		return <div>Loading</div>;
-	}
-
 	return (
 		<ENoteForm
 			title="Edit eNote"
+			isWorking={isLoading || isFetching}
 			initModel={data}
 			onChange={debouncedSave} />
 	);

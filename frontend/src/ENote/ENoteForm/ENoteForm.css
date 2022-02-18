@@ -6,3 +6,9 @@
 	gap: 1rem;
 	width: 20rem;
 }
+
+.create-e-note-title-box {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+}

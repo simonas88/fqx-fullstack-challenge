@@ -2,7 +2,8 @@ import reducer, { AnyChangeAction, ENoteModelReducerState } from "./createENoteR
 
 const EMPTY_STATE = {
 	coreModel: {},
-	derivedModel: {}
+	derivedModel: {},
+	pristine: true,
 };
 
 describe("createENoteReducer", () => {
@@ -12,9 +13,9 @@ describe("createENoteReducer", () => {
 
 	test.each`
 		key                | value                     | state
-		${"purchasePrice"} | ${100}                    | ${{ ...EMPTY_STATE, coreModel: { purchasePrice: 100 } }}
-		${"paymentDate"}   | ${new Date("2020-01-01")} | ${{ ...EMPTY_STATE, coreModel: { paymentDate: new Date("2020-01-01") } }}
-		${"dueDate"}       | ${new Date("2020-01-01")} | ${{ ...EMPTY_STATE, coreModel: { dueDate: new Date("2020-01-01") } }}
+		${"purchasePrice"} | ${100}                    | ${{ ...EMPTY_STATE, coreModel: { purchasePrice: 100 }, pristine: false }}
+		${"paymentDate"}   | ${new Date("2020-01-01")} | ${{ ...EMPTY_STATE, coreModel: { paymentDate: new Date("2020-01-01") }, pristine: false }}
+		${"dueDate"}       | ${new Date("2020-01-01")} | ${{ ...EMPTY_STATE, coreModel: { dueDate: new Date("2020-01-01") }, pristine: false }}
 	`("updates $key in coreModel", ({ key, value, state }) => {
 		expect(reducer(EMPTY_STATE, { key, value, type: "change" })).toEqual(state);
 	});
@@ -22,7 +23,8 @@ describe("createENoteReducer", () => {
 	it("udpates maturity when both dates purchaseDate and dueDate is available", () => {
 		const inputState = {
 			coreModel: { paymentDate: new Date("2020-01-01") },
-			derivedModel: {}
+			derivedModel: {},
+			pristine: true,
 		};
 		const action = { type: "change", key: "dueDate", value: new Date("2020-02-01") } as AnyChangeAction;
 		const outputState = {
@@ -30,7 +32,8 @@ describe("createENoteReducer", () => {
 				paymentDate: new Date("2020-01-01"),
 				dueDate: new Date("2020-02-01")
 			},
-			derivedModel: { maturity: 30 }
+			derivedModel: { maturity: 30 },
+			pristine: false
 		};
 		expect(reducer(inputState, action)).toEqual(outputState);
 	});
@@ -44,7 +47,8 @@ describe("createENoteReducer", () => {
 		const action = { type: "change", key, value } as AnyChangeAction;
 		const outputState = {
 			coreModel: { faceValueKey: key, faceValueValue: value },
-			derivedModel: {}
+			derivedModel: {},
+			pristine: false
 		};
 		expect(reducer(EMPTY_STATE, action)).toEqual(outputState);
 	});
@@ -96,9 +100,9 @@ describe("createENoteReducer", () => {
 			}
 		]
 	])("updates derived model according to faceValue (%s)", (value, coreModel, derivedModel) => {
-		const inputState = { coreModel, derivedModel: {} };
+		const inputState = { coreModel, derivedModel: {}, pristine: true };
 		const action = { type: "change", key: "faceValue", value } as AnyChangeAction;
-		const outputState = { coreModel: { ...coreModel, faceValueKey: "faceValue", faceValueValue: value }, derivedModel };
+		const outputState = { coreModel: { ...coreModel, faceValueKey: "faceValue", faceValueValue: value }, derivedModel, pristine: false };
 		expect(reducer(inputState, action)).toEqual(outputState);
 	});
 
@@ -149,9 +153,9 @@ describe("createENoteReducer", () => {
 			}
 		],
 	])("updates derived model according to agioPercentage (%s)", (value, coreModel, derivedModel) => {
-		const inputState = { coreModel, derivedModel: {} };
+		const inputState = { coreModel, derivedModel: {}, pristine: true };
 		const action = { type: "change", key: "agioPercentage", value } as AnyChangeAction;
-		const outputState = { coreModel: { ...coreModel, faceValueKey: "agioPercentage", faceValueValue: value }, derivedModel };
+		const outputState = { coreModel: { ...coreModel, faceValueKey: "agioPercentage", faceValueValue: value }, derivedModel, pristine: false };
 		expect(reducer(inputState, action)).toEqual(outputState);
 	});
 
@@ -202,9 +206,9 @@ describe("createENoteReducer", () => {
 			}
 		],
 	])("updates derived model according to agioValue (%s)", (value, coreModel, derivedModel) => {
-		const inputState = { coreModel, derivedModel: {} };
+		const inputState = { coreModel, derivedModel: {}, pristine: true };
 		const action = { type: "change", key: "agioValue", value } as AnyChangeAction;
-		const outputState = { coreModel: { ...coreModel, faceValueKey: "agioValue", faceValueValue: value }, derivedModel };
+		const outputState = { coreModel: { ...coreModel, faceValueKey: "agioValue", faceValueValue: value }, derivedModel, pristine: false };
 		expect(reducer(inputState, action)).toEqual(outputState);
 	});
 
@@ -270,9 +274,9 @@ describe("createENoteReducer", () => {
 			}
 		],
 	])("updates derived model according to aprPercentage (%s)", (value, coreModel, derivedModel) => {
-		const inputState = { coreModel, derivedModel: {} };
+		const inputState = { coreModel, derivedModel: {}, pristine: true };
 		const action = { type: "change", key: "aprPercentage", value } as AnyChangeAction;
-		const outputState = { coreModel: { ...coreModel, faceValueKey: "aprPercentage", faceValueValue: value }, derivedModel };
+		const outputState = { coreModel: { ...coreModel, faceValueKey: "aprPercentage", faceValueValue: value }, derivedModel, pristine: false };
 		expect(reducer(inputState, action)).toEqual(outputState);
 	});
 });
