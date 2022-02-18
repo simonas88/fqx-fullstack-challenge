@@ -1,13 +1,11 @@
-type EnoteCoreModel = {
+export type FaceValueKey = "faceValue" | "agioPercentage" | "agioValue" | "aprPercentage";
+
+export type EnoteCoreModel = {
 	purchasePrice: number;
 	paymentDate: Date;
 	dueDate: Date;
+	faceValueKey: FaceValueKey;
+	faceValueValue: number;
 }
 
-export type EnoteModel = 
-	| EnoteCoreModel & { faceValue: number }
-	| EnoteCoreModel & { agioPercentage: number }
-	| EnoteCoreModel & { agioValue: number }
-	| EnoteCoreModel & { aprPercentage: number }
-
-export type EnoteSavedModel = EnoteModel & { id: number }
+export type EnoteCoreModelSaved = EnoteCoreModel & { id: number }

@@ -1,10 +1,10 @@
-import { ENoteCoreModel, ENoteDerivedModel, ENoteModel } from "../contracts";
+import { EnoteCoreModel, EnoteDerivedModel, EnoteFormModel } from "../../contracts";
 import { getDerivedModel } from "./ENoteModelUtils";
 
-type ChangeAction<FieldKey extends keyof ENoteModel> = {
+type ChangeAction<FieldKey extends keyof EnoteFormModel> = {
 	type: "change";
 	key: FieldKey;
-	value: ENoteModel[FieldKey];
+	value: EnoteFormModel[FieldKey];
 }
 
 // https://github.com/microsoft/TypeScript/issues/18758
@@ -23,11 +23,11 @@ type ResetAction = {
 }
 
 export type ENoteModelReducerState = {
-	coreModel: Partial<ENoteCoreModel>;
-	derivedModel: Partial<ENoteDerivedModel>;
+	coreModel: Partial<EnoteCoreModel>;
+	derivedModel: Partial<EnoteDerivedModel>;
 }
 
-export const getENoteModel = (state: ENoteModelReducerState): Partial<ENoteModel> => ({
+export const getENoteModel = (state: ENoteModelReducerState): Partial<EnoteFormModel> => ({
 	...state.derivedModel,
 	purchasePrice: state.coreModel.purchasePrice,
 	dueDate: state.coreModel.dueDate,

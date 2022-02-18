@@ -1,5 +1,5 @@
 import { readFile, unlink } from "fs/promises";
-import { EnoteModel } from "contracts";
+import { EnoteCoreModel } from "./contracts/enote.contracts";
 import { EnoteRepository } from "./enote.repository";
 
 const REPO_LOCATION = "./database.test.json";
@@ -9,11 +9,12 @@ const readFilePromise = async () => {
 	return JSON.parse(content);
 };
 
-const TEST_ENOTE: EnoteModel = {
+const TEST_ENOTE: EnoteCoreModel = {
 	purchasePrice: 100,
 	paymentDate: new Date("2020-01-01").toISOString() as unknown as Date,
 	dueDate: new Date("2020-02-01").toISOString() as unknown as Date,
-	faceValue: 100
+	faceValueKey: "faceValue",
+	faceValueValue: 100
 };
 
 describe("EnoteRepository", () => {
@@ -30,6 +31,6 @@ describe("EnoteRepository", () => {
 	it("stores enote in json", async () => {
 		const repo = new EnoteRepository();
 		await repo.create(TEST_ENOTE);
-		expect(await readFilePromise()).toEqual([{...TEST_ENOTE, id: 0}]);
+		expect(await readFilePromise()).toEqual([{ ...TEST_ENOTE, id: 0 }]);
 	});
 });

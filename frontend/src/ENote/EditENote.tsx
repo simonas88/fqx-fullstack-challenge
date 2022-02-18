@@ -1,18 +1,22 @@
 import { FC, useCallback, useEffect } from "react";
 import { useMutation, useQuery } from "react-query";
 import { useParams, useNavigate } from "react-router";
-import { EnoteSavedModel } from "contracts";
 import { getEnote, putEnote } from "./api/api";
-import { ENoteCoreModel } from "./contracts";
+import { EnoteCoreModel } from "../contracts";
 import ENoteForm from "./ENoteForm/ENoteForm";
-import { mapToENoteCoreModel, mapToEnoteModel } from "./ENoteForm/ENoteModelUtils";
+import { EnoteCoreModelSaved } from "../../../contracts";
 
 const EditENote: FC = () => {
 	const { id } = useParams();
 	const navigate = useNavigate();
 	const { mutateAsync } = useMutation("update", putEnote);
 	const { data, status } = useQuery("fetch", () => getEnote(id!), { retry: false });
-	const handleSave = useCallback((model: ENoteCoreModel) => mutateAsync({ id: Number(id), model: mapToEnoteModel(model, Number(id)) as EnoteSavedModel }), [id, mutateAsync]);
+	const handleSave = useCallback((model: EnoteCoreModel) => {
+		mutateAsync({
+			id: Number(id),
+			model: model as EnoteCoreModelSaved
+		});
+	}, [id, mutateAsync]);
 
 	useEffect(() => {
 		if (status === "error") {
@@ -27,7 +31,7 @@ const EditENote: FC = () => {
 	return (
 		<ENoteForm
 			title="Edit eNote"
-			initModel={mapToENoteCoreModel(data!)}
+			initModel={data}
 			onSave={handleSave} />
 	);
 };

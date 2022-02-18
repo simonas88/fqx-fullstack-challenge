@@ -1,16 +1,15 @@
-import { EnoteModel } from "contracts";
-import { ENoteCoreModel, ENoteDerivedModel, FaceValueKey } from "../contracts";
+import { EnoteCoreModel, EnoteDerivedModel } from "../../contracts";
 import { getAprPercentage, getMaturity } from "../financeUtils";
 
 export const isValueSet = <T extends number | Date | string>(value?: number | Date | string): value is T => value !== undefined && value !== null;
-const isCoreFullySet = (input: Partial<ENoteCoreModel>): input is ENoteCoreModel => true
+const isCoreFullySet = (input: Partial<EnoteCoreModel>): input is EnoteCoreModel => true
 	&& isValueSet(input.purchasePrice)
 	&& isValueSet(input.paymentDate)
 	&& isValueSet(input.dueDate)
 	&& isValueSet(input.faceValueKey)
 	&& isValueSet(input.faceValueValue);
 
-type DeriveFrom = (coreModel: ENoteCoreModel, maturity: number) => ENoteDerivedModel
+type DeriveFrom = (coreModel: EnoteCoreModel, maturity: number) => EnoteDerivedModel
 
 const deriveFromFaceValue: DeriveFrom = (coreModel, maturity) => {
 	const faceValue = coreModel.faceValueValue;
@@ -72,7 +71,7 @@ const deriveFromAprPercentage: DeriveFrom = (coreModel, maturity) => {
 	};
 };
 
-export const getDerivedModel = (coreModel: Partial<ENoteCoreModel>): Partial<ENoteDerivedModel> => {
+export const getDerivedModel = (coreModel: Partial<EnoteCoreModel>): Partial<EnoteDerivedModel> => {
 	const { paymentDate, dueDate } = coreModel;
 	const maturity = isValueSet(paymentDate) && isValueSet(dueDate)
 		? getMaturity(paymentDate, dueDate)
@@ -96,26 +95,4 @@ export const getDerivedModel = (coreModel: Partial<ENoteCoreModel>): Partial<ENo
 			return deriveFromAprPercentage(coreModel, maturity);
 		}
 	}
-};
-
-export const mapToEnoteModel = (input: ENoteCoreModel, id?: number) => ({
-	id,
-	purchasePrice: input.purchasePrice,
-	paymentDate: input.paymentDate,
-	dueDate: input.dueDate,
-	[input.faceValueKey]: input.faceValueValue
-}) as unknown as EnoteModel;
-
-const FACE_VALUE_KEYS = ["faceValue", "agioValue", "agioPercentage", "aprPercentage"];
-export const mapToENoteCoreModel = (input: EnoteModel): ENoteCoreModel => {
-	const faceValueKey = FACE_VALUE_KEYS.find(key => isValueSet(input[key as keyof EnoteModel])) as FaceValueKey;
-	const faceValueValue = input[faceValueKey as keyof EnoteModel] as number;
-
-	return {
-		purchasePrice: input.purchasePrice,
-		paymentDate: new Date(input.paymentDate),
-		dueDate: new Date(input.dueDate),
-		faceValueKey,
-		faceValueValue,
-	};
 };

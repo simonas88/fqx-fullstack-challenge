@@ -4,15 +4,15 @@ import DatePicker from "../components/DatePicker";
 import ScalarInput from "../components/ScalarInput";
 import SaveButton from "../components/SaveButton";
 import { useENoteReducer } from "./useENoteReducer";
-import { ENoteCoreModel } from "../contracts";
+import { EnoteCoreModel } from "../../contracts";
 import "./ENoteForm.css";
 
 const toPercentPoints = (input?: number): number | undefined => input && input * 100;
 
 type ENoteFormProps = {
-	onSave: (model: ENoteCoreModel) => void;
+	onSave: (model: EnoteCoreModel) => void;
 	title: string;
-	initModel?: ENoteCoreModel;
+	initModel?: EnoteCoreModel;
 }
 
 const ENoteForm: FC<ENoteFormProps> = ({ onSave, title, initModel }) => {
@@ -20,7 +20,7 @@ const ENoteForm: FC<ENoteFormProps> = ({ onSave, title, initModel }) => {
 	const { changeAgioPercentage, changeAprPercentage } = actions;
 	const handleAgioPercentage = useCallback(input => changeAgioPercentage(input / 100), [changeAgioPercentage]);
 	const handleAprPercentage = useCallback(input => changeAprPercentage(input / 100), [changeAprPercentage]);
-	const handleSave = () => onSave(eNoteCoreModel as ENoteCoreModel);
+	const handleSave = () => onSave(eNoteCoreModel as EnoteCoreModel);
 
 	return (
 		<div className="create-e-note-container">

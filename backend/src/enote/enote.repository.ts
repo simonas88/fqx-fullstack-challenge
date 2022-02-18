@@ -1,7 +1,6 @@
 import { readFile, writeFile } from "fs/promises";
 import { Injectable } from "@nestjs/common";
-import { EnoteModel, EnoteSavedModel } from "contracts";
-import { EnoteEntity } from "./entities/enote.entity";
+import { EnoteCoreModel, EnoteEntity } from "./contracts/enote.contracts";
 
 const REPO_LOCATION =  process.env.NODE_ENV === "test" ? "./database.test.json" : "../database.json";
 
@@ -26,7 +25,7 @@ export class EnoteRepository {
 		return ++maxId;
 	}
 
-	public async create (enote: EnoteModel) {
+	public async create (enote: EnoteCoreModel): Promise<EnoteEntity> {
 		const allEnotes = await this.getAllEnotes();
 		const newEnote = { ...enote, id: this.getNextEnoteId(allEnotes) };
 		allEnotes.push(newEnote);
@@ -43,7 +42,7 @@ export class EnoteRepository {
 		return allEnotes.find(enote => enote.id === id);
 	}
 
-	public async update (id: number, payload: EnoteSavedModel): Promise<EnoteEntity> {
+	public async update (id: number, payload: EnoteEntity): Promise<EnoteEntity> {
 		if (id !== payload.id) {
 			throw Error("incorrect enote id");
 		}

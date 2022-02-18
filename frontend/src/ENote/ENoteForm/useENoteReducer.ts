@@ -1,9 +1,9 @@
 import { useMemo, useReducer } from "react";
-import { ENoteCoreModel } from "../contracts";
+import { EnoteCoreModel } from "../../contracts";
 import reducer, { defaultState, ENoteModelReducerState, getENoteModel } from "./createENoteReducer";
 import { getDerivedModel, isValueSet } from "./ENoteModelUtils";
 
-const getInitState = (initModel?: ENoteCoreModel): ENoteModelReducerState => {
+const getInitState = (initModel?: EnoteCoreModel): ENoteModelReducerState => {
 	if (!initModel) return defaultState;
 	return {
 		coreModel: initModel,
@@ -11,7 +11,7 @@ const getInitState = (initModel?: ENoteCoreModel): ENoteModelReducerState => {
 	};
 };
 
-export const useENoteReducer = (initModel?: ENoteCoreModel) => {
+export const useENoteReducer = (initModel?: EnoteCoreModel) => {
 	const [reducerState, dispatch] = useReducer(reducer, getInitState(initModel));
 	const eNoteModel = useMemo(() => getENoteModel(reducerState), [reducerState]);
 
