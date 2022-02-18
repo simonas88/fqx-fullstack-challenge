@@ -9,7 +9,8 @@ const CreateENote: FC = () => {
 	return (
 		<ENoteForm
 			title="Create eNote"
-			onSave={mutateAsync} />
+			onChange={(model) => console.log(model)}
+			onSubmit={mutateAsync} />
 	);
 };
 

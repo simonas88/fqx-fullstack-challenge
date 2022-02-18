@@ -1,26 +1,36 @@
-import { FC, useCallback } from "react";
+import { ReactElement, useCallback, useEffect } from "react";
 import CurrencyInput from "../components/CurrencyInput";
 import DatePicker from "../components/DatePicker";
 import ScalarInput from "../components/ScalarInput";
 import SaveButton from "../components/SaveButton";
 import { useENoteReducer } from "./useENoteReducer";
-import { EnoteCoreModel } from "../../contracts";
+import { EnoteCoreModel, EnoteCoreModelSaved } from "../../contracts";
 import "./ENoteForm.css";
 
 const toPercentPoints = (input?: number): number | undefined => input && input * 100;
 
-type ENoteFormProps = {
-	onSave: (model: EnoteCoreModel) => void;
+type ENoteFormProps<T extends EnoteCoreModel | EnoteCoreModelSaved> = {
+	onSubmit?: (model: T) => void;
+	onChange: (model: T) => void;
 	title: string;
 	initModel?: EnoteCoreModel;
 }
 
-const ENoteForm: FC<ENoteFormProps> = ({ onSave, title, initModel }) => {
+const ENoteForm = <T extends EnoteCoreModel | EnoteCoreModelSaved>({
+	onSubmit,
+	onChange,
+	title,
+	initModel
+}: ENoteFormProps<T>): ReactElement => {
 	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet, eNoteCoreModel } = useENoteReducer(initModel);
 	const { changeAgioPercentage, changeAprPercentage } = actions;
 	const handleAgioPercentage = useCallback(input => changeAgioPercentage(input / 100), [changeAgioPercentage]);
 	const handleAprPercentage = useCallback(input => changeAprPercentage(input / 100), [changeAprPercentage]);
-	const handleSave = () => onSave(eNoteCoreModel as EnoteCoreModel);
+	const handleSave = () => onSubmit?.(eNoteCoreModel as T);
+
+	useEffect(() => {
+		onChange(eNoteCoreModel as T);
+	}, [eNoteCoreModel, onChange]);
 
 	return (
 		<div className="create-e-note-container">
@@ -77,7 +87,9 @@ const ENoteForm: FC<ENoteFormProps> = ({ onSave, title, initModel }) => {
 					limitPrecision={controlledFaceValueKey !== "faceValue"}
 					value={eNoteModel.faceValue}
 					onChange={actions.changeFaceValue} />
-				<SaveButton onClick={handleSave} disabled={!isCoreModelSet && !controlledFaceValueKey}>SAVE</SaveButton>
+				{onSubmit && (
+					<SaveButton onClick={handleSave} disabled={!isCoreModelSet && !controlledFaceValueKey}>Submit</SaveButton>
+				)}
 			</form>
 		</div>
 	);
