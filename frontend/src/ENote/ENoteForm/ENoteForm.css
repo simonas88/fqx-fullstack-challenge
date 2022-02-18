@@ -12,3 +12,8 @@
 	display: flex;
 	justify-content: space-between;
 }
+.create-e-note-title-box > div {
+	align-items: center;
+	display: flex;
+	justify-content: space-between;
+}

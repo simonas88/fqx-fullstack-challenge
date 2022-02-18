@@ -5,9 +5,11 @@ import DatePicker from "../components/DatePicker";
 import ScalarInput from "../components/ScalarInput";
 import SaveButton from "../components/SaveButton";
 import LoadingIndicator from "../components/LoadingIndicator";
+
 import { useENoteReducer } from "./useENoteReducer";
 import { EnoteCoreModel, EnoteCoreModelSaved } from "../../contracts";
 import "./ENoteForm.css";
+import CheckMarkIcon from "../components/CheckMarkIcon";
 
 const toPercentPoints = (input?: number): number | undefined => input && input * 100;
 
@@ -15,6 +17,7 @@ type ENoteFormProps<T extends EnoteCoreModel | EnoteCoreModelSaved> = {
 	onSubmit?: (model: T) => void;
 	onChange?: (model: T) => void;
 	isWorking?: boolean;
+	isSaved?: boolean;
 	title: string;
 	initModel?: EnoteCoreModel;
 }
@@ -24,7 +27,8 @@ const ENoteForm = <T extends EnoteCoreModel | EnoteCoreModelSaved>({
 	onChange,
 	title,
 	initModel,
-	isWorking
+	isWorking,
+	isSaved,
 }: ENoteFormProps<T>): ReactElement => {
 	const { eNoteModel, actions, controlledFaceValueKey, isCoreModelSet, eNoteCoreModel, pristine } = useENoteReducer();
 	const { changeAgioPercentage, changeAprPercentage, reset } = actions;
@@ -49,6 +53,7 @@ const ENoteForm = <T extends EnoteCoreModel | EnoteCoreModelSaved>({
 			<div className="create-e-note-title-box">
 				<h2>{title}</h2>
 				{isWorking && (<LoadingIndicator />)}
+				{!isWorking && isSaved && (<div>Saved&nbsp;<CheckMarkIcon /></div>)}
 			</div>
 			<form className="create-e-note-form">
 				<CurrencyInput
@@ -103,7 +108,7 @@ const ENoteForm = <T extends EnoteCoreModel | EnoteCoreModelSaved>({
 					value={eNoteModel.faceValue}
 					onChange={actions.changeFaceValue} />
 				{onSubmit && (
-					<SaveButton onClick={handleSave} disabled={!isCoreModelSet && !controlledFaceValueKey}>Submit</SaveButton>
+					<SaveButton onClick={handleSave} disabled={!isCoreModelSet || !controlledFaceValueKey}>Submit</SaveButton>
 				)}
 			</form>
 		</div>
